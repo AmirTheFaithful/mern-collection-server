@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { logControllerException } from "../../utils/controllers";
+import { getUserByEmail } from "../actions/users-actions";
 
 interface RequestCredentials {
   username: string;
@@ -22,7 +23,15 @@ export const registerController = async (
       });
     }
 
-    const existingUser: UserInterface = await getUserByEmail(email);
+    // Check if the user with such email is existing
+    const existingUser = await getUserByEmail(email);
+
+    if (existingUser) {
+      return res.status(409).json({
+        message:
+          "User with the provided email address already exists in the database.",
+      });
+    }
   } catch (error: unknown) {
     logControllerException("registerController", error as Error);
     return res.status(500).json({ message: "Internal server exception." });
