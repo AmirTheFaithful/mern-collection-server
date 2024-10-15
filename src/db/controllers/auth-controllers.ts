@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import { logControllerException } from "../../utils/controllers";
-import { randomizer } from "../../utils/auth";
-import { getUserByEmail } from "../actions/users-actions";
+import { randomizer, authenticate } from "../../utils/auth";
+import { getUserByEmail, createUser } from "../actions/users-actions";
 
 interface RequestCredentials {
   username: string;
@@ -35,6 +35,19 @@ export const registerController = async (
     }
 
     const salt: string = randomizer();
+    const newUser = await createUser({
+      username,
+      email,
+      auth: {
+        salt: salt,
+        password: authenticate(salt, password),
+      },
+    });
+
+    return res.status(201).json({
+      message: "Successfully registered a new user to the database.",
+      data: newUser,
+    });
   } catch (error: unknown) {
     logControllerException("registerController", error as Error);
     return res.status(500).json({ message: "Internal server exception." });
