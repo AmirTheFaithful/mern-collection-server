@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { logControllerException } from "../../utils/controllers";
+import { randomizer } from "../../utils/auth";
 import { getUserByEmail } from "../actions/users-actions";
 
 interface RequestCredentials {
@@ -32,6 +33,8 @@ export const registerController = async (
           "User with the provided email address already exists in the database.",
       });
     }
+
+    const salt: string = randomizer();
   } catch (error: unknown) {
     logControllerException("registerController", error as Error);
     return res.status(500).json({ message: "Internal server exception." });
