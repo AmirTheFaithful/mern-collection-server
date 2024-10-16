@@ -13,7 +13,7 @@ interface RequestCredentials {
 export const registerController = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<any> => {
   try {
     // Get credentials sent by user from the request body,
     const { username, email, password }: RequestCredentials = req.body;
