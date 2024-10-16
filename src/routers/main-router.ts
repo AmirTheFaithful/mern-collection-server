@@ -7,6 +7,7 @@ const router: Router = Router();
 
 export default (): Router => {
   usersRouter(router);
+  authRouter(router);
 
   return router;
 };
