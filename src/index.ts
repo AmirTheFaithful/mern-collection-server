@@ -5,8 +5,10 @@ import bodyParser from "body-parser";
 import compression from "compression";
 import cors from "cors";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 import ping from "./mongo-setup";
+import router from "./routers/main-router";
 
 dotenv.config();
 
@@ -27,3 +29,16 @@ server.listen(port, (): void => {
 
 // Check MongoDB authenticated connection
 ping();
+
+// Use MongoDB authenticated connection link form .env file
+const mongoURI: string = process.env.MONGO_URI;
+// Set JS global Promise object to use it instead of MongoDB's deprecated Promise object
+mongoose.Promise = Promise;
+
+mongoose.connect(mongoURI);
+mongoose.connection.on("error", (error: Error) => {
+  console.log(error);
+});
+
+// Set main router on the home path of the web site
+app.use("/", router());
