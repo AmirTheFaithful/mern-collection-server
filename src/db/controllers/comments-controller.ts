@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import * as actions from "../actions/comments-actions";
 import { logControllerException } from "../../utils/controllers";
 
-// Sends GET request for sing comment document.
+// Sends GET request for all comment documents.
 export const getComments = async (
   req: Request,
   res: Response
@@ -26,6 +26,7 @@ export const getComments = async (
   }
 };
 
+// Sends GET:[ID] request for single comment document.
 export const getComment = async (
   req: Request,
   res: Response
