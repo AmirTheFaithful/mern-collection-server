@@ -1,4 +1,4 @@
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 
 import CommentModel from "../models/comment-model";
 

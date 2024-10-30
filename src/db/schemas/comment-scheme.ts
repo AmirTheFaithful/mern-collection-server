@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 
 const CommentSchema = new Schema({
   authorID: {
