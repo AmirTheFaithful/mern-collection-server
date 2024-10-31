@@ -4,7 +4,7 @@ import { logControllerException } from "../../utils/controllers";
 import { randomizer, authenticate } from "../../utils/auth";
 import { getUserByEmail, createUser } from "../actions/users-actions";
 
-interface RequestCredentials {
+interface UserCredentials {
   username: string;
   email: string;
   password: string;
@@ -16,7 +16,7 @@ export const registerController = async (
 ): Promise<any> => {
   try {
     // Get credentials sent by user from the request body,
-    const { username, email, password }: RequestCredentials = req.body;
+    const { username, email, password }: UserCredentials = req.body;
     // And then check for their presence:
     if (!username || !email || !password) {
       return res.status(400).json({

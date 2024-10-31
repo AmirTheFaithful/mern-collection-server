@@ -49,3 +49,28 @@ export const getComment = async (
     return res.status(500).json({ message: "Internal server error." });
   }
 };
+
+export const createComment = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const { authorID, content }: CommentInterface = req.body;
+
+    if (!authorID || !content) {
+      return res.status(400).json({
+        message: "The fields 'authorID and 'content' should be provided.'",
+      });
+    }
+
+    const newComment = await actions.createNewComment({ authorID, content });
+
+    return res.status(201).json({
+      data: newComment,
+      message: "A new comment has been successfully added to the DB.",
+    });
+  } catch (error: unknown) {
+    logControllerException("getComment", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};

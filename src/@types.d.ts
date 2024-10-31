@@ -12,3 +12,8 @@ declare interface UserInterface {
   avatarURL: string;
   auth: UserAuthInterface;
 }
+
+declare interface CommentInterface {
+  authorID: string;
+  content: string;
+}
