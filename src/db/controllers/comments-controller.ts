@@ -8,7 +8,7 @@ import { logControllerException } from "../../utils/controllers";
 export const getComments = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<any> => {
   try {
     const comments = await actions.getAllComments();
 
@@ -27,10 +27,7 @@ export const getComments = async (
 };
 
 // Sends GET:[ID] request for single comment document.
-export const getComment = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+export const getComment = async (req: Request, res: Response): Promise<any> => {
   try {
     const existingComment = await actions.getCommentById(
       new ObjectId(req.params.id)
@@ -53,7 +50,7 @@ export const getComment = async (
 export const createComment = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<any> => {
   try {
     const { authorID, content }: CommentInterface = req.body;
 
