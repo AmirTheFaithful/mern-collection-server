@@ -4,6 +4,12 @@ import { ObjectId } from "mongodb";
 import * as actions from "../actions/comments-actions";
 import { logControllerException } from "../../utils/controllers";
 
+/* Interfaces describing request objects data. */
+interface NewCommentData {
+  authorID: string;
+  content: string;
+}
+
 // Sends GET request for all comment documents.
 export const getComments = async (
   req: Request,
@@ -52,7 +58,7 @@ export const createComment = async (
   res: Response
 ): Promise<any> => {
   try {
-    const { authorID, content }: CommentInterface = req.body;
+    const { authorID, content }: NewCommentData = req.body;
 
     if (!authorID || !content) {
       return res.status(400).json({
