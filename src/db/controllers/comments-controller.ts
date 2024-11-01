@@ -14,6 +14,10 @@ interface UpdateRequestData {
   content?: string;
 }
 
+interface PartialUpdateFields {
+  content?: string;
+}
+
 // Sends GET request for all comment documents.
 export const getComments = async (
   req: Request,
@@ -113,6 +117,47 @@ export const updateComment = async (
       .json({ data: updatedData, message: "Successfully updated a comment." });
   } catch (error: unknown) {
     logControllerException("updateComment", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const updateCommentPartially = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    if (!req.params.id) {
+      return res.status(400).json({ message: "ID parameter is not provided." });
+    }
+
+    const objId: ObjectId = new ObjectId(req.params.id);
+    const existingComment = await actions.getCommentById(objId);
+
+    if (!existingComment) {
+      return res.status(404).json({ message: "Comment not found." });
+    }
+
+    // Object to contain all fields to be modified.
+    const updatingFields: PartialUpdateFields = {};
+
+    switch (req.body) {
+      case req.body.content:
+        updatingFields.content = req.body.content;
+        break;
+      default:
+        console.log("No fields to update.");
+        break;
+    }
+
+    const updatedComment = await actions.updateCommentById(
+      objId,
+      updatingFields
+    );
+    return res
+      .status(200)
+      .json({ data: updatedComment, message: "Successfully updated comment." });
+  } catch (error: unknown) {
+    logControllerException("updateCommentPartially", error as Error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
