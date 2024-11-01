@@ -92,7 +92,7 @@ export const updateComment = async (
     const updatedData: UpdateRequestData = req.body;
 
     // Modifying all comment's fields.
-    await actions.updateUserById(new ObjectId(req.params.id), updatedData);
+    await actions.updateCommentById(new ObjectId(req.params.id), updatedData);
 
     return res
       .status(200)
