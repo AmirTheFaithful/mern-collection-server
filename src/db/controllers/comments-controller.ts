@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
 import * as actions from "../actions/comments-actions";
-import { logControllerException } from "../../utils/controllers";
+import { logControllerException, createObjId } from "../../utils/controllers";
 
 /* Interfaces describing request objects data. */
 interface NewCommentData {
@@ -39,10 +39,18 @@ export const getComments = async (
 // Sends GET:[ID] request for single comment document.
 export const getComment = async (req: Request, res: Response): Promise<any> => {
   try {
-    const existingComment = await actions.getCommentById(
-      new ObjectId(req.params.id)
-    );
+    // Check for ID presence:
+    if (!req.params.id) {
+      return res.status(400).json({ message: "ID parameter is not provided." });
+    }
 
+    // If it was provided - convert it to needed type.
+    const objId: ObjectId = createObjId(req.params.id);
+
+    // Fetch the comment.
+    const existingComment = await actions.getCommentById(objId);
+
+    // Handle 404 case:
     if (!existingComment) {
       return res.status(404).json({ message: "Comment not found." });
     }
@@ -88,11 +96,17 @@ export const updateComment = async (
   res: Response
 ): Promise<any> => {
   try {
+    if (!req.params.id) {
+      return res.status(400).json({ message: "ID parameter is not provided." });
+    }
+
+    const objId: ObjectId = createObjId(req.params.id);
+
     // Get name(s) of field(s) to update from the request body.
     const updatedData: UpdateRequestData = req.body;
 
     // Modifying all comment's fields.
-    await actions.updateCommentById(new ObjectId(req.params.id), updatedData);
+    await actions.updateCommentById(objId, updatedData);
 
     return res
       .status(200)
@@ -108,16 +122,19 @@ export const deleteComment = async (
   res: Response
 ): Promise<any> => {
   try {
-    // Extract the ID from among the request parameters, and convert it to an ObjectId.
-    const id: ObjectId = new ObjectId(req.params.id);
+    if (!req.params.id) {
+      return res.status(400).json({ message: "ID parameter is not provided." });
+    }
 
-    const existingComment = await actions.getCommentById(id);
+    const objId: ObjectId = new ObjectId(req.params.id);
+
+    const existingComment = await actions.getCommentById(objId);
 
     if (!existingComment) {
       return res.status(404).json({ message: "Comment not found." });
     }
 
-    await actions.deleteCommentById(id);
+    await actions.deleteCommentById(objId);
 
     return res.status(200).json({
       data: existingComment,
