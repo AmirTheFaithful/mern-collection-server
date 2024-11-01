@@ -10,6 +10,10 @@ interface NewCommentData {
   content: string;
 }
 
+interface UpdateRequestData {
+  content?: string;
+}
+
 // Sends GET request for all comment documents.
 export const getComments = async (
   req: Request,
@@ -72,6 +76,25 @@ export const createComment = async (
       data: newComment,
       message: "A new comment has been successfully added to the DB.",
     });
+  } catch (error: unknown) {
+    logControllerException("getComment", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const updateComment = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    // Get name(s) of field(s) to update from the request body.
+    const updatedData: UpdateRequestData = req.body;
+
+    await actions.updateUserById(new ObjectId(req.params.id), updatedData);
+
+    return res
+      .status(200)
+      .json({ data: updatedData, message: "Successfully update a comment." });
   } catch (error: unknown) {
     logControllerException("getComment", error as Error);
     return res.status(500).json({ message: "Internal server error." });
