@@ -77,7 +77,7 @@ export const createComment = async (
       message: "A new comment has been successfully added to the DB.",
     });
   } catch (error: unknown) {
-    logControllerException("getComment", error as Error);
+    logControllerException("createComment", error as Error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
@@ -96,7 +96,34 @@ export const updateComment = async (
       .status(200)
       .json({ data: updatedData, message: "Successfully update a comment." });
   } catch (error: unknown) {
-    logControllerException("getComment", error as Error);
+    logControllerException("updateComment", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const deleteComment = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { id } = req.params;
+
+    const existingComment = await actions.getCommentById(new ObjectId(id));
+
+    if (!existingComment) {
+      return res.status(404).json({ message: "Comment not found." });
+    }
+
+    await actions.deleteCommentById(new ObjectId(id));
+
+    return res
+      .status(200)
+      .json({
+        data: existingComment,
+        message: "Successfully deleted comment from the DB.",
+      });
+  } catch (error: unknown) {
+    logControllerException("deleteComment", error as Error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
