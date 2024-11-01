@@ -82,6 +82,7 @@ export const createComment = async (
   }
 };
 
+// Updates ENTIRE document by performing PUT request.
 export const updateComment = async (
   req: Request,
   res: Response
@@ -90,11 +91,12 @@ export const updateComment = async (
     // Get name(s) of field(s) to update from the request body.
     const updatedData: UpdateRequestData = req.body;
 
+    // Modifying all comment's fields.
     await actions.updateUserById(new ObjectId(req.params.id), updatedData);
 
     return res
       .status(200)
-      .json({ data: updatedData, message: "Successfully update a comment." });
+      .json({ data: updatedData, message: "Successfully updated a comment." });
   } catch (error: unknown) {
     logControllerException("updateComment", error as Error);
     return res.status(500).json({ message: "Internal server error." });
@@ -106,22 +108,21 @@ export const deleteComment = async (
   res: Response
 ): Promise<any> => {
   try {
-    const { id } = req.params;
+    // Extract the ID from among the request parameters, and convert it to an ObjectId.
+    const id: ObjectId = new ObjectId(req.params.id);
 
-    const existingComment = await actions.getCommentById(new ObjectId(id));
+    const existingComment = await actions.getCommentById(id);
 
     if (!existingComment) {
       return res.status(404).json({ message: "Comment not found." });
     }
 
-    await actions.deleteCommentById(new ObjectId(id));
+    await actions.deleteCommentById(id);
 
-    return res
-      .status(200)
-      .json({
-        data: existingComment,
-        message: "Successfully deleted comment from the DB.",
-      });
+    return res.status(200).json({
+      data: existingComment,
+      message: "Successfully deleted comment from the DB.",
+    });
   } catch (error: unknown) {
     logControllerException("deleteComment", error as Error);
     return res.status(500).json({ message: "Internal server error." });
