@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
 
 import { logControllerException } from "../../utils/controllers";
 import { getAllUsers, getUserById } from "../actions/users-actions";
@@ -31,7 +32,12 @@ export const getRegisteredUser = async (
   res: Response
 ): Promise<any> => {
   try {
-    const user = await getUserById(req.params.id);
+    if (!req.params.id) {
+      return res.status(400).json({ message: "ID parameter is not provided." });
+    }
+
+    const objId: ObjectId = new ObjectId(req.params.id);
+    const user = await getUserById(objId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found." });
