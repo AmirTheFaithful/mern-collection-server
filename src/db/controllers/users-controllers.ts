@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import { logControllerException } from "../../utils/controllers";
+import { logControllerException, createObjId } from "../../utils/controllers";
 import { getAllUsers, getUserById } from "../actions/users-actions";
 
 export const getRegisteredUsers = async (
@@ -36,7 +36,7 @@ export const getRegisteredUser = async (
       return res.status(400).json({ message: "ID parameter is not provided." });
     }
 
-    const objId: ObjectId = new ObjectId(req.params.id);
+    const objId: ObjectId = createObjId(req.params.id);
     const user = await getUserById(objId);
 
     if (!user) {
