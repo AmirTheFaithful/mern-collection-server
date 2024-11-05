@@ -13,9 +13,8 @@ const CommentSchema = new Schema({
   publicationDate: {
     type: Date,
     required: true,
-    default: Date.now(),
   },
-  // Yet, it's all for now.
+  // More fields, comming soon.
 });
 
 export default CommentSchema;
