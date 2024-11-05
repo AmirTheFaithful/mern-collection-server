@@ -9,6 +9,11 @@ const CommentSchema = new Schema({
   content: {
     type: [Schema.Types.Mixed],
     required: true,
+    // Property describing content type.
+    mediaType: {
+      type: ["paragraph", "paragraphs", "image", "video", "gif"],
+      required: true,
+    },
   },
   publicationDate: {
     type: Date,
