@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
+import CommentInterface from "db/types/comment.interface";
 import * as actions from "../actions/comments-actions";
-import { logControllerException, createObjId } from "../../utils/controllers";
+import {
+  logControllerException,
+  createObjId,
+  isCommentMediaValid,
+} from "../../utils/controllers";
 
 /* Interfaces describing request objects data. */
 interface NewCommentData {
@@ -11,11 +16,11 @@ interface NewCommentData {
 }
 
 interface UpdateRequestData {
-  content?: string;
+  media?: string;
 }
 
 interface PartialUpdateFields {
-  content?: string;
+  media?: string;
 }
 
 // Sends GET request for all comment documents.
@@ -26,7 +31,7 @@ export const getComments = async (
   try {
     const comments = await actions.getAllComments();
 
-    if (!comments) {
+    if (!comments || comments.length === 0) {
       return res.status(404).json({ message: "Comments not found." });
     }
 
@@ -74,15 +79,35 @@ export const createComment = async (
   res: Response
 ): Promise<any> => {
   try {
-    const { authorID, content }: NewCommentData = req.body;
+    const { authorID, media }: CommentInterface = req.body;
 
-    if (!authorID || !content) {
+    // Check whether the mandatory fields are present:
+    if (!authorID || !media) {
       return res.status(400).json({
-        message: "The fields 'authorID and 'content' should be provided.'",
+        message: "The field 'authorID' and 'media' object should be provided.'",
       });
     }
 
-    const newComment = await actions.createNewComment({ authorID, content });
+    // Check the validity of the media object:
+    if (!media.content || !media.kind) {
+      return res.status(400).json({
+        message: "The fields 'content' and 'kind' should be provided.",
+      });
+    }
+
+    // Check if the kind of the content is valid:
+    if (!isCommentMediaValid(media.kind)) {
+      return res.status(400).json({
+        message: "The content type of the comment is not valid.",
+      });
+    }
+
+    // Perform posting.
+    const newComment = await actions.createNewComment({
+      authorID,
+      media,
+      publicationDate: new Date(),
+    });
 
     return res.status(201).json({
       data: newComment,
@@ -95,7 +120,7 @@ export const createComment = async (
 };
 
 // Updates ENTIRE document by performing PUT request.
-export const updateComment = async (
+export const updateCommentCompletely = async (
   req: Request,
   res: Response
 ): Promise<any> => {
@@ -104,10 +129,24 @@ export const updateComment = async (
       return res.status(400).json({ message: "ID parameter is not provided." });
     }
 
+    // Check if the media present:
+    if (!req.body.media) {
+      return res
+        .status(400)
+        .json({ message: "The 'media' object should be provided." });
+    }
+
+    // Check if the media object is valid:
+    if (!req.body.media.content || !req.body.media.kind) {
+      return res.status(400).json({
+        message: "The 'content' and the 'kind' fields should be provided.",
+      });
+    }
+
     const objId: ObjectId = createObjId(req.params.id);
 
     // Get name(s) of field(s) to update from the request body.
-    const updatedData: UpdateRequestData = req.body;
+    const updatedData: UpdateRequestData = req.body.media;
 
     // Modifying all comment's fields.
     await actions.updateCommentById(objId, updatedData);
@@ -116,7 +155,7 @@ export const updateComment = async (
       .status(200)
       .json({ data: updatedData, message: "Successfully updated a comment." });
   } catch (error: unknown) {
-    logControllerException("updateComment", error as Error);
+    logControllerException("updateCommentCompletely", error as Error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
@@ -141,8 +180,8 @@ export const updateCommentPartially = async (
     const updatingFields: PartialUpdateFields = {};
 
     switch (req.body) {
-      case req.body.content:
-        updatingFields.content = req.body.content;
+      case req.body.media:
+        updatingFields.media = req.body.media;
         break;
       default:
         console.log("No fields to update.");

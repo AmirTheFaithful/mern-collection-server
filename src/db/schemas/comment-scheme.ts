@@ -6,11 +6,13 @@ const CommentSchema = new Schema({
     type: ObjectId,
     required: true,
   },
-  content: {
-    type: [Schema.Types.Mixed],
-    required: true,
+  media: {
+    content: {
+      type: [Schema.Types.Mixed],
+      required: true,
+    },
     // Property describing content type.
-    mediaType: {
+    kind: {
       type: ["paragraph", "paragraphs", "image", "video", "gif"],
       required: true,
     },

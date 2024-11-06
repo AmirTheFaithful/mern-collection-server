@@ -41,3 +41,22 @@ export const createObjId = (id: string): ObjectId => {
     console.log(error);
   }
 };
+
+/**
+ * Checks if the provided value meets possible values of MedaType.
+ *
+ * @param value - value to be checked.
+ * @returns - either true if the value coresponds, otherwise - false.
+ */
+export const isCommentMediaValid = (value: string): boolean => {
+  switch (value) {
+    case "paragraph":
+    case "paragraphs":
+    case "image":
+    case "video":
+    case "gif":
+      return true;
+    default:
+      false;
+  }
+};
