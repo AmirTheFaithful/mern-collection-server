@@ -74,12 +74,44 @@ export const getComment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+// Gets replies to some comment by it's ID.
+export const getReplies = async (req: Request, res: Response): Promise<any> => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json({ message: "The ID parameter should be provided." });
+    }
+
+    const id: ObjectId = createObjId(req.params.id);
+
+    const existingComment = await actions.getCommentById(id);
+
+    if (!existingComment) {
+      return res.status(404).json({ message: "Comment not found." });
+    }
+
+    const replies = await actions.getRepliesById(id);
+
+    if (!replies) {
+      return res.status(404).json({ message: "No reply comments found." });
+    }
+
+    return res
+      .status(200)
+      .json({ data: replies, message: "Successfully fetched replies." });
+  } catch (error: unknown) {
+    logControllerException("getReplies", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 export const createComment = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   try {
-    const { authorID, media }: CommentInterface = req.body;
+    const { parentID, authorID, media }: CommentInterface = req.body;
 
     // Check whether the mandatory fields are present:
     if (!authorID || !media) {
@@ -104,6 +136,7 @@ export const createComment = async (
 
     // Perform posting.
     const newComment = await actions.createNewComment({
+      parentID,
       authorID,
       media,
       publicationDate: new Date(),

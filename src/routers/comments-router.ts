@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   getComment,
+  getReplies,
   getComments,
   createComment,
   updateCommentCompletely,
@@ -16,4 +17,6 @@ export default (router: Router): void => {
   router.put("/api/comments/:id", updateCommentCompletely);
   router.patch("/api/comments/:id", updateCommentPartially);
   router.delete("/api/comments/:id", deleteComment);
+
+  router.get("/api/comments/replies/:id", getReplies);
 };

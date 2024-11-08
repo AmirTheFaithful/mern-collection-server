@@ -2,6 +2,10 @@ import { Schema } from "mongoose";
 import { ObjectId } from "mongodb";
 
 const CommentSchema = new Schema({
+  parentID: {
+    type: String,
+    required: false, // Set for clarity.
+  },
   authorID: {
     type: ObjectId,
     required: true,
