@@ -30,6 +30,16 @@ server.listen(port, (): void => {
 // Check MongoDB authenticated connection
 ping();
 
+// Handle
+process.on(
+  "unhandledRejection",
+  (reason: unknown, promise: Promise<unknown>): void => {
+    console.log(
+      `Unhandled rejection at ${promise}.\nRejection reason: ${reason}.`
+    );
+  }
+);
+
 // Use MongoDB authenticated connection link form .env file
 const mongoURI: string = process.env.MONGO_URI;
 // Set JS global Promise object to use it instead of MongoDB's deprecated Promise object
