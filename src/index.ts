@@ -30,12 +30,12 @@ server.listen(port, (): void => {
 // Check MongoDB authenticated connection
 ping();
 
-// Handle
+// Just for temporary logging. Should be remove soon.
 process.on(
   "unhandledRejection",
   (reason: unknown, promise: Promise<unknown>): void => {
     console.log(
-      `Unhandled rejection at ${promise}.\nRejection reason: ${reason}.`
+      `Detected unhandled rejection at ${promise}.\nRejection reason: ${reason}.`
     );
   }
 );
