@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import { logControllerException, createObjId } from "../../utils/controllers";
-import { getAllUsers, getUserById } from "../actions/users-actions";
+import { logControllerException, createObjId } from "../utils/controllers";
+import { getAllUsers, getUserById } from "../db/actions/users-actions";
 
 export const getRegisteredUsers = async (
   req: Request,

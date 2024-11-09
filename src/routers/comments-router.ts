@@ -8,7 +8,7 @@ import {
   updateCommentCompletely,
   updateCommentPartially,
   deleteComment,
-} from "../db/controllers/comments-controller";
+} from "../controllers/comments-controller";
 
 export default (router: Router): void => {
   router.get("/api/comments", getComments);

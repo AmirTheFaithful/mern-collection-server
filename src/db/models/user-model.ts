@@ -1,6 +1,6 @@
 import { model } from "mongoose";
 
-import UserSchema from "../schemas/user-scheme";
+import UserSchema from "../schemas/user-schema";
 
 const UserModel = model("User", UserSchema);
 

@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-import http, { Server } from "http";
+import { Server, createServer } from "http";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import compression from "compression";
@@ -24,23 +24,13 @@ app.use(sizeLogger);
 const port: string = process.env.PORT;
 const localURL: string = process.env.LOCAL_URL;
 
-const server: Server = http.createServer(app);
+const server: Server = createServer(app);
 server.listen(port, (): void => {
   console.log(`The server is running on ${localURL}:${port}.`);
 });
 
 // Check MongoDB authenticated connection
 ping();
-
-// Just for temporary logging. Should be remove soon.
-process.on(
-  "unhandledRejection",
-  (reason: unknown, promise: Promise<unknown>): void => {
-    console.log(
-      `Detected unhandled rejection at ${promise}.\nRejection reason: ${reason}.`
-    );
-  }
-);
 
 // Use MongoDB authenticated connection link form .env file
 const mongoURI: string = process.env.MONGO_URI;

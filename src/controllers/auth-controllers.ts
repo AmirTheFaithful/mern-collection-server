@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { logControllerException } from "../../utils/controllers";
-import { randomizer, authenticate } from "../../utils/auth";
-import { getUserByEmail, createUser } from "../actions/users-actions";
+import { logControllerException } from "../utils/controllers";
+import { randomizer, authenticate } from "../utils/auth";
+import { getUserByEmail, createUser } from "../db/actions/users-actions";
 
 interface UserCredentials {
   username: string;

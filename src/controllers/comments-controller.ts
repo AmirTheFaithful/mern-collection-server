@@ -1,20 +1,15 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import CommentInterface from "db/types/comment.interface";
-import * as actions from "../actions/comments-actions";
+import CommentInterface from "../types/comment.interface";
+import * as actions from "../db/actions/comments-actions";
 import {
   logControllerException,
   createObjId,
   isCommentMediaValid,
-} from "../../utils/controllers";
+} from "../utils/controllers";
 
 /* Interfaces describing request objects data. */
-interface NewCommentData {
-  authorID: string;
-  content: string;
-}
-
 interface UpdateRequestData {
   media?: string;
 }
