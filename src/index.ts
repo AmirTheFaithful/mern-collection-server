@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 
 import ping from "./mongo-setup";
+import sizeLogger from "./middlewares/sizeLogger";
 import router from "./routers/main-router";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cors({ credentials: true }));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(sizeLogger);
 
 const port: string = process.env.PORT;
 const localURL: string = process.env.LOCAL_URL;
