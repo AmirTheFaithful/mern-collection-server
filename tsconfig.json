@@ -7,10 +7,5 @@
     "sourceMap": true,
     "noImplicitAny": true
   },
-  "include": [
-    "src/**/*",
-    "src/middlewares",
-    "src/routers",
-    "src/typessrc/utilstils"
-  ]
+  "include": ["src/**/*"]
 }
