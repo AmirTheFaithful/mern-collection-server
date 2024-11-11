@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
+import PostInterface from "types/post.interface";
 import * as actions from "../db/actions/posts-actions";
 import { logControllerException, createObjId } from "../utils/controllers";
 
@@ -42,6 +43,45 @@ export const getPost = async (req: Request, res: Response): Promise<any> => {
       .json({ data: post, message: "Succesfully fetched the post." });
   } catch (error: unknown) {
     logControllerException("getPost", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const createPost = async (req: Request, res: Response): Promise<any> => {
+  try {
+    // Firstly, check if all required fields are provided:
+    if (!req.body.authorID || !req.body.media || !req.body.publishedOn) {
+      return res.status(400).json({
+        message:
+          "The authorID, media object and publishedOn fields should be provided.",
+      });
+    }
+
+    // Next, check if the media object has it's fields:
+    if (!req.body.media.content || !req.body.media.kind) {
+      return res.status(400).json({
+        message:
+          "Both content and it's kind should be provided in media object.",
+      });
+    }
+
+    // Retrieve required data from the request's body object.
+    const { authorID, media, publishedOn }: PostInterface = req.body;
+
+    // Send POST request to the database.
+    const post = await actions.createNewPost({
+      authorID,
+      media,
+      publishedOn,
+    });
+
+    // Return success response as the result.
+    return res.status(201).json({
+      data: post,
+      message: "A new post has been published successfully.",
+    });
+  } catch (error: unknown) {
+    logControllerException("createPost", error as Error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
