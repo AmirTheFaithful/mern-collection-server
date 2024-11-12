@@ -12,6 +12,13 @@
  */
 type MediaType = "paragraph" | "paragraphs" | "image" | "video" | "gif";
 
+/**
+ * Object to contain contents and it's type of the comments,
+ * posts and any post-like documents.
+ *
+ * @property {content} - contents of the publication.
+ * @property {kind} - A description to the contents.
+ */
 interface Media {
   content: any; // Allows paragraphs, image / video / gif URLs.
   kind: MediaType;

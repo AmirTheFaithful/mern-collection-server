@@ -85,3 +85,32 @@ export const createPost = async (req: Request, res: Response): Promise<any> => {
     return res.status(500).json({ message: "Internal server error." });
   }
 };
+
+export const deletePost = async (req: Request, res: Response): Promise<any> => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json({ message: "The parameter 'id' should be provided." });
+    }
+
+    const id: ObjectId = new ObjectId(req.params.id);
+
+    const existingPost = await actions.getPostById(id);
+    if (!existingPost) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    await actions.deletePostById(id);
+
+    return res
+      .status(200)
+      .json({
+        data: existingPost,
+        message: "Post has been successfully deleted.",
+      });
+  } catch (error: unknown) {
+    logControllerException("deletePost", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
