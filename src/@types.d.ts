@@ -11,3 +11,8 @@
  * };
  */
 type MediaType = "paragraph" | "paragraphs" | "image" | "video" | "gif";
+
+interface Media {
+  content: any; // Allows paragraphs, image / video / gif URLs.
+  kind: MediaType;
+}
