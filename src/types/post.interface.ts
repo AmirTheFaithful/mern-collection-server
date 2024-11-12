@@ -1,8 +1,5 @@
 export default interface PostInterface {
   authorID: string;
-  media: {
-    content: any;
-    kind: string;
-  };
+  media: Media;
   publishedOn: Date;
 }
