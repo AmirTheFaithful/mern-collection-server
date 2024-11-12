@@ -9,7 +9,7 @@ export const getPosts = async (req: Request, res: Response): Promise<any> => {
   try {
     const posts = await actions.getAllPosts();
 
-    if (!posts || posts.length) {
+    if (!posts) {
       return res.status(404).json({ message: "No posts were found." });
     }
 
@@ -50,10 +50,9 @@ export const getPost = async (req: Request, res: Response): Promise<any> => {
 export const createPost = async (req: Request, res: Response): Promise<any> => {
   try {
     // Firstly, check if all required fields are provided:
-    if (!req.body.authorID || !req.body.media || !req.body.publishedOn) {
+    if (!req.body.authorID || !req.body.media) {
       return res.status(400).json({
-        message:
-          "The authorID, media object and publishedOn fields should be provided.",
+        message: "The authorID field and the media object should be provided.",
       });
     }
 
@@ -103,12 +102,10 @@ export const deletePost = async (req: Request, res: Response): Promise<any> => {
 
     await actions.deletePostById(id);
 
-    return res
-      .status(200)
-      .json({
-        data: existingPost,
-        message: "Post has been successfully deleted.",
-      });
+    return res.status(200).json({
+      data: existingPost,
+      message: "Post has been successfully deleted.",
+    });
   } catch (error: unknown) {
     logControllerException("deletePost", error as Error);
     return res.status(500).json({ message: "Internal server error." });
