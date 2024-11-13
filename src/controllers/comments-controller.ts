@@ -71,7 +71,10 @@ export const getComment = async (req: Request, res: Response): Promise<any> => {
 };
 
 // Gets replies to some comment by it's ID.
-export const getReplies = async (req: Request, res: Response): Promise<any> => {
+export const getCommentReplies = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   try {
     if (!req.params.id) {
       return res
@@ -125,12 +128,10 @@ export const getPostComments = async (
       return res.status(404).json({ message: "No comments were found." });
     }
 
-    return res
-      .status(200)
-      .json({
-        data: postComments,
-        message: "Successfully fetched comments to the post.",
-      });
+    return res.status(200).json({
+      data: postComments,
+      message: "Successfully fetched comments to the post.",
+    });
   } catch (error: unknown) {
     logControllerException("getComments", error as Error);
     return res.status(500).json({ message: "Internal server error." });
