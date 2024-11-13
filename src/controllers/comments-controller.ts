@@ -86,7 +86,7 @@ export const getReplies = async (req: Request, res: Response): Promise<any> => {
       return res.status(404).json({ message: "Comment not found." });
     }
 
-    const replies = await actions.getRepliesById(id);
+    const replies = await actions.getRepliesByCommentId(id);
 
     if (!replies) {
       return res.status(404).json({ message: "No reply comments found." });

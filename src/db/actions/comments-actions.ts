@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import CommentModel from "../models/comment-model";
 
 export const getCommentById = async (id: ObjectId) => CommentModel.findById(id);
-export const getRepliesById = async (id: ObjectId) =>
+export const getRepliesByCommentId = async (id: ObjectId) =>
   CommentModel.find({ parentID: id });
 export const getCommentsByPostId = (id: ObjectId) =>
   CommentModel.find({ postID: id });
