@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 
 import CommentInterface from "../types/comment.interface";
 import * as actions from "../db/actions/comments-actions";
+import { getPostById } from "../db/actions/posts-actions";
 import {
   logControllerException,
   createObjId,
@@ -97,6 +98,41 @@ export const getReplies = async (req: Request, res: Response): Promise<any> => {
       .json({ data: replies, message: "Successfully fetched replies." });
   } catch (error: unknown) {
     logControllerException("getReplies", error as Error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const getPostComments = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json({ message: "The 'id' parameter should be prvided." });
+    }
+
+    const postId: ObjectId = createObjId(req.params.id);
+    const existingPost = await getPostById(postId);
+    if (!existingPost) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    const postComments = await actions.getCommentsByPostId(postId);
+
+    if (!postComments) {
+      return res.status(404).json({ message: "No comments were found." });
+    }
+
+    return res
+      .status(200)
+      .json({
+        data: postComments,
+        message: "Successfully fetched comments to the post.",
+      });
+  } catch (error: unknown) {
+    logControllerException("getComments", error as Error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
