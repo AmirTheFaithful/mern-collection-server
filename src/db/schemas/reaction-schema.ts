@@ -6,10 +6,8 @@ const ReactionSchema = new Schema({
     type: ObjectId,
     required: true,
   },
-  postID: {
-    type: ObjectId,
-    required: true,
-  },
+  postID: ObjectId,
+  commentID: ObjectId,
   emoji: {
     type: String,
     enum: ["like", "dislike", "heart", "angry", "laugh", "sad"],
