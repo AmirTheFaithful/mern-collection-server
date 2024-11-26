@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
 import { logControllerException, createObjId } from "../utils/controllers";
-import { getAllUsers, getUserById } from "../db/actions/users-actions";
+import {
+  getAllUsers,
+  getUserById,
+  getUserByEmail,
+} from "../db/actions/users-actions";
 
 export const getRegisteredUsers = async (
   req: Request,
@@ -49,6 +53,32 @@ export const getRegisteredUser = async (
     });
   } catch (error: unknown) {
     logControllerException("getRegisteredUser", error as Error);
+    return res.status(500).json({ message: "Internal server exception." });
+  }
+};
+
+export const getRegisteredUserByEmail = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    if (!req.params.email) {
+      return res
+        .status(400)
+        .json({ message: "The 'email' field should be provided. " });
+    }
+
+    const user = await getUserByEmail(req.params.email);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    return res
+      .status(200)
+      .json({ data: user, message: "User has been successfully fetched." });
+  } catch (error: unknown) {
+    logControllerException("getRegisteredUserByEmail", error as Error);
     return res.status(500).json({ message: "Internal server exception." });
   }
 };
